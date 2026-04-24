@@ -72,7 +72,7 @@ if page == "📊 مؤشرات الأداء المؤسسي":
     m2.metric("أعلى قطاع إنجازاً", df.iloc[df['الإنجاز %'].idxmax()]['الجهة'])
     m3.metric("وحدات قيد المتابعة", len(df[df['الإنجاز %'] < 75]))
 
-    col1, col2 = st.columns()
+    col1, col2 = st.columns(2)
     with col1:
         fig = px.bar(df, x="الجهة", y="الإنجاز %", color="الإنجاز %", 
                      title="مقارنة الإنجاز الفعلي", color_continuous_scale="RdYlGn")
