@@ -54,7 +54,7 @@ if page == "📊 مؤشرات الأداء":
         st.plotly_chart(fig, use_container_width=True)
     with col2:
         # السطر المعدل بمسافة صحيحة
-        st.dataframe(df[['الجهة', 'الإنجاز %']].style.background_gradient(axis=0, gmap=df['الإنجاز %'], cmap='RdYlGn', subset=['الإنجاز %']), use_container_width=True)
+        st.dataframe(df[['الجهة', 'الإنجاز %']].style.background_gradient(cmap='RdYlGn', subset=['الإنجاز %']), use_container_width=True)
 
 # --- صفحة الموازنة ---
 else:
