@@ -6,42 +6,65 @@ import time
 # 1. إعدادات المنصة الرسمية
 st.set_page_config(page_title="منصة الأداء والموازنة الذكية", layout="wide", page_icon="🏛️")
 
-# --- تنسيق الواجهة الاحترافي (CSS) ---
+# --- تنسيق الواجهة الاحترافي وضمان وضوح الأرقام (CSS) ---
 st.markdown("""
     <style>
     /* خلفية التطبيق */
     .stApp { background-color: #f8fafc; }
     
-    /* تنسيق بطاقات الأرقام الملونة */
+    /* تنسيق بطاقات الأرقام لجعلها بارزة */
     div[data-testid="stMetric"] {
-        background-color: #ffffff;
+        background-color: #ffffff !important;
         border-radius: 15px;
         padding: 20px;
-        border-right: 5px solid #1e3a8a;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border-right: 10px solid #1e3a8a;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
     }
     
+    /* جعل الأرقام سوداء داكنة جداً وعريضة للوضوح على الموبايل */
+    div[data-testid="stMetricValue"] > div {
+        color: #000000 !important;
+        font-weight: 900 !important;
+        font-size: 2.2rem !important;
+        text-shadow: 0.5px 0.5px #e2e8f0;
+    }
+    
+    /* جعل تسمية العنوان فوق الرقم واضحة */
+    div[data-testid="stMetricLabel"] > label {
+        color: #1e3a8a !important;
+        font-weight: 800 !important;
+        font-size: 1.2rem !important;
+    }
+
     /* تنسيق القائمة الجانبية */
     section[data-testid="stSidebar"] {
         background-color: #1e3a8a;
     }
-    section[data-testid="stSidebar"] .stMarkdown p, section[data-testid="stSidebar"] h1, section[data-testid="stSidebar"] h2 {
+    section[data-testid="stSidebar"] .stMarkdown p, 
+    section[data-testid="stSidebar"] h1, 
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] label {
         color: white !important;
     }
     
-    /* العناوين الرئيسية */
-    h1 { color: #1e3a8a; font-family: 'Arial'; border-right: 8px solid #1e3a8a; padding-right: 15px; }
-    
-    /* الأزرار */
+    /* العناوين الرئيسية في الصفحة */
+    h1, h2, h3 { 
+        color: #1e3a8a !important; 
+        font-family: 'Arial'; 
+        font-weight: 900 !important;
+    }
+
+    /* أزرار التنفيذ */
     .stButton>button {
         background-color: #1e3a8a;
-        color: white;
-        border-radius: 10px;
+        color: white !important;
+        border-radius: 12px;
         font-weight: bold;
-        height: 3em;
-        border: None;
+        height: 3.5em;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
     }
-    .stButton>button:hover { background-color: #3b82f6; color: white; }
+    .stButton>button:hover { background-color: #3b82f6; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -61,7 +84,7 @@ if not st.session_state.logged_in:
                 st.session_state.logged_in = True
                 st.rerun()
             else:
-                st.error("البيانات غير صحيحة")
+                st.sidebar.error("البيانات غير صحيحة")
     st.stop()
 
 # 3. قاعدة البيانات الموحدة
@@ -76,9 +99,9 @@ if 'df' not in st.session_state:
     ]
     st.session_state.df = pd.DataFrame({
         "الجهة": depts,
-        "الإنجاز %": [92, 85, 88, 70, 95, 65, 80, 89, 72, 84, 91, 78, 96, 82, 87, 93, 86],
-        "المخصص د": [100000] * 17,
-        "المنفق د": [45000, 30000, 50000, 20000, 60000, 15000, 40000, 55000, 25000, 48000, 32000, 28000, 50000, 35000, 42000, 58000, 44000]
+        "الإنجاز %": [92, 85, 78, 95, 60, 88, 72, 90, 68, 82, 94, 76, 91, 89, 70, 84, 87],
+        "المخصص د": [500000] * 17,
+        "المنفق د": [150000] * 17
     })
 
 df = st.session_state.df
@@ -88,7 +111,7 @@ with st.sidebar:
     st.write("---")
     page = st.radio("القائمة الرئيسية:", ["📊 مؤشرات الأداء المؤسسي", "💰 الموازنة والحوالات"])
     st.write("---")
-    st.caption("مطور النظام: وحدة تطوير الأداء")
+    st.caption("مطور النظام: وحدة تطوير الأداء المؤسسي")
     if st.button("تسجيل الخروج"):
         st.session_state.logged_in = False
         st.rerun()
@@ -100,7 +123,7 @@ if page == "📊 مؤشرات الأداء المؤسسي":
     m1, m2, m3 = st.columns(3)
     m1.metric("متوسط الإنجاز العام", f"{df['الإنجاز %'].mean():.1f}%")
     m2.metric("أعلى قطاع إنجازاً", df.iloc[df['الإنجاز %'].idxmax()]['الجهة'])
-    m3.metric("وحدات قيد المتابعة", len(df[df['الإنجاز %'] < 75]))
+    m3.metric("وحدات تحت المتابعة", len(df[df['الإنجاز %'] < 75]))
 
     col1, col2 = st.columns(2)
     with col1:
