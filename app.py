@@ -31,9 +31,9 @@ if 'df' not in st.session_state:
     ]
     st.session_state.df = pd.DataFrame({
         "الجهة": depts,
-        "الإنجاز %": [92, 85, 70, 88, 65, 95, 80, 91, 74, 82, 89, 77, 94, 68, 86, 90, 83],
+        "الإنجاز %": [92, 85, 70, 88, 65, 95, 80, 91, 77, 83, 90, 82, 89, 74, 93, 86, 79],
         "المخصص د": [100000] * 17,
-        "المنفق د": [20000] * 17
+        "المنفق د": [40000] * 17
     })
 
 df = st.session_state.df
@@ -48,18 +48,18 @@ if page == "📊 مؤشرات الأداء":
     m1.metric("متوسط الإنجاز", f"{df['الإنجاز %'].mean():.1f}%")
     m2.metric("وحدات تحت المتابعة", len(df[df['الإنجاز %'] < 75]))
     
-    col1, col2 = st.columns(2) # هنا أضفنا الرقم 2 لحل الخطأ السابق
+    col1, col2 = st.columns(2)
     with col1:
         fig = px.bar(df, x="الجهة", y="الإنجاز %", color="الإنجاز %", color_continuous_scale="RdYlGn")
         st.plotly_chart(fig, use_container_width=True)
     with col2:
-    st.dataframe(df[['الجهة', 'الإنجاز %']].style.background_gradient(axis=0, gmap=df['الإنجاز %'], cmap='RdYlGn', subset=['الإنجاز %']))
+        # السطر المعدل بمسافة صحيحة
+        st.dataframe(df[['الجهة', 'الإنجاز %']].style.background_gradient(axis=0, gmap=df['الإنجاز %'], cmap='RdYlGn', subset=['الإنجاز %']), use_container_width=True)
+
 # --- صفحة الموازنة ---
 else:
     st.title("💰 نظام الحوالات والأوامر المالية")
     selected = st.selectbox("اختر الجهة:", df['الجهة'])
-    
-    # جلب البيانات بطريقة آمنة
     row = df[df['الجهة'] == selected].iloc[0]
     rem = row['المخصص د'] - row['المنفق د']
     
@@ -78,7 +78,8 @@ else:
         if amt > rem:
             st.error("تجاوز السقف المالي!")
         else:
-            with st.status("جاري المعالجة..."): time.sleep(1)
+            with st.status("جاري المعالجة..."): 
+                time.sleep(1)
             st.session_state.df.loc[st.session_state.df['الجهة'] == selected, 'المنفق د'] += amt
             st.success("✅ تم الاعتماد!")
             st.balloons()
