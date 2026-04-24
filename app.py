@@ -75,8 +75,7 @@ if st.button("🚀 تنفيذ الحوالة آلياً"):
     else:
         with st.status("جاري المعالجة..."): time.sleep(2)
         idx = df[df['البند'] == item].index
-        st.session_state.df.at[idx, 'المنفق'] += amt
-        st.success("✅ تم الاعتماد وتحديث الخزينة فوراً.")
+st.session_state.df.loc[st.session_state.df['بند الإنفاق'] == selected_item, 'المنفق حالياً'] += req_amount        st.success("✅ تم الاعتماد وتحديث الخزينة فوراً.")
         st.balloons()
         time.sleep(1)
         st.rerun()
