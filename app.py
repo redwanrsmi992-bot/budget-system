@@ -14,7 +14,7 @@ if not st.session_state.logged_in:
     user = st.sidebar.text_input("اسم المستخدم")
     pw = st.sidebar.text_input("كلمة المرور", type="password")
     if st.sidebar.button("دخول"):
-        if user == "admin" and pw == "2026":
+        if user == "admin" and pw == "2027":
             st.session_state.logged_in = True
             st.rerun()
     st.stop()
