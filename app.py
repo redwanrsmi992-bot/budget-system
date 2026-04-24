@@ -53,8 +53,7 @@ if page == "📊 مؤشرات الأداء":
         fig = px.bar(df, x="الجهة", y="الإنجاز %", color="الإنجاز %", color_continuous_scale="RdYlGn")
         st.plotly_chart(fig, use_container_width=True)
     with col2:
-        st.dataframe(df[['الجهة', 'الإنجاز %']].style.background_gradient(cmap='RdYlGn', subset=['الإنجاز %']))
-
+st.dataframe(df[['الجهة', 'الإنجاز %']].style.background_gradient(axis=0, gmap=df['الإنجاز %'], cmap='RdYlGn', subset=['الإنجاز %']))
 # --- صفحة الموازنة ---
 else:
     st.title("💰 نظام الحوالات والأوامر المالية")
